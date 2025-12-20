@@ -3,9 +3,14 @@ package TreeMatching;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TreeMatching {
+    static int n;
+    static int[] to, head, next;
+    static int ec = 0;
+    static boolean[] mat;
+    static int ms = 0;
     static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
@@ -67,41 +72,57 @@ public class TreeMatching {
             return sb.toString();
         }
     }
-    public static int solve(ArrayList<ArrayList<Integer>> arr, int i, int[] vis){
-        if (i >= arr.size()) return 0;
-        
-        int x = arr.get(i).get(0), y = arr.get(i).get(1);
-        if (vis[x]==1 || vis[y]==1) return solve(arr, i+1, vis);
-        int ans = solve(arr, i+1, vis);
-        if (vis[x]==0 && vis[y]==0) {
-            vis[x]=1;
-            vis[y]=1;
-            ans = Math.max(ans, 1+solve(arr, i+1, vis));
-            vis[x]=0;
-            vis[y]=0;
-        }
-        return ans;
+    
+    public static void main(String[] args) {
+        Thread thread = new Thread(null, () -> {
+            try {
+                solve();
+            } catch (Exception e) {}
+        }, "solver", 1 << 28); 
+        thread.start();
     }
-    public static void main(String[] args) throws IOException {
+    public static void makeConnection(int a, int b) {
+        to[ec]=b;
+        next[ec]=head[a];
+        head[a]=ec++;
+    }
+    public static void solve() throws IOException {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        int n = fs.nextInt();
-        ArrayList<ArrayList<Integer>> arr = new ArrayList<>();
+        n = fs.nextInt();
+        if (n == 1) {
+            out.print(0);
+            out.flush();
+            return;
+        } 
+        head = new int[n+1];
+        Arrays.fill(head, -1);
+        to = new int[2*n];
+        next = new int[2*n];
+        ec=0;
         for (int i = 0; i < n-1; i++) {
             int x, y;
             x = fs.nextInt();
             y = fs.nextInt();
-            arr.add(new ArrayList<>());
-            arr.get(i).add(x);
-            arr.get(i).add(y);
+            makeConnection(x, y);
+            makeConnection(y, x);
         }
-        int[] vis = new int[n+1];
-        int[] dp = new int[n+1];
-        for (int i = 0; i <= n; i++) {
-            dp[i]=-1;
-        }
-        int result = solve(arr, 0, vis);
-        out.print(result);
+        mat = new boolean[n+1];
+        dfs(1, -1);
+        out.print(ms);
         out.flush();
+    }
+    static void dfs(int u, int p) {
+        for (int i = head[u]; i != -1; i = next[i]) {
+            int v = to[i];
+            if (v != p) {
+                dfs(v, u);
+                if (!mat[v] && !mat[u]) {
+                    mat[u]=true;
+                    mat[v]=true;
+                    ms++;
+                }
+            }
+        }
     }
 }

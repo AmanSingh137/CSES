@@ -2,19 +2,19 @@
 #include <vector>
 using namespace std;
 
-int solve(vector<vector<int>>& a, int i, vector<int>& vis, int n, vector<vector<int>>& dp) {
+int solve(vector<vector<int>>& a, int i, vector<int>& vis, int n) {
     if (i >= n-1) return 0;
     int x = a[i][0], y = a[i][1];
-    if (vis[x]==1 || vis[y]==1) return dp[i][0]=solve(a, i+1, vis, n, dp);
-    if (dp[i][0]==-1) dp[i][0] = solve(a, i+1, vis, n, dp);
+    if (vis[x]==1 || vis[y]==1) return solve(a, i+1, vis, n);
+    int ans = solve(a, i+1, vis, n);
     if (vis[x]==0 && vis[y]==0) {
         vis[x]=1;
         vis[y]=1;
-        if (dp[i][1] == -1) dp[i][1] = max(dp[i][0], 1+solve(a, i+1, vis, n, dp));
+        ans = max(ans, 1+solve(a, i+1, vis, n));
         vis[x]=0;
         vis[y]=0;
     }
-    return max(dp[i][0], dp[i][1]);
+    return ans;
 }
 
 int main() {
@@ -28,8 +28,7 @@ int main() {
         vec[i][1]=y;
     }
     vector<int> vis (n+1, 0);
-    vector<vector<int>> dp(n+1, vector<int>(2, -1));
-    int ans = solve(vec, 0, vis, n, dp);
+    int ans = solve(vec, 0, vis, n);
     cout << ans;
     return 0;
 }
