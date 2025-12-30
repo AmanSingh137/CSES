@@ -1,12 +1,16 @@
-package CollectingNumbers2;
+package Tree.TreeMatching;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
-
-public class CollectingNumbers {
+public class TreeMatching {
+    static int n;
+    static int[] to, head, next;
+    static int ec = 0;
+    static boolean[] mat;
+    static int ms = 0;
     static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
@@ -68,63 +72,57 @@ public class CollectingNumbers {
             return sb.toString();
         }
     }
-    public static void main(String[] args) throws IOException {
+    
+    public static void main(String[] args) {
+        Thread thread = new Thread(null, () -> {
+            try {
+                solve();
+            } catch (Exception e) {}
+        }, "solver", 1 << 28); 
+        thread.start();
+    }
+    public static void makeConnection(int a, int b) {
+        to[ec]=b;
+        next[ec]=head[a];
+        head[a]=ec++;
+    }
+    public static void solve() throws IOException {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        int n = fs.nextInt(), q = fs.nextInt();
-        int[] ind = new int[n+1];
-        int[] arr = new int[n+1];
-        for (int i = 1; i <= n; i++) {
-            int x = fs.nextInt();
-            ind[x]=i;
-            arr[i]=x;
+        n = fs.nextInt();
+        if (n == 1) {
+            out.print(0);
+            out.flush();
+            return;
+        } 
+        head = new int[n+1];
+        Arrays.fill(head, -1);
+        to = new int[2*n];
+        next = new int[2*n];
+        ec=0;
+        for (int i = 0; i < n-1; i++) {
+            int x, y;
+            x = fs.nextInt();
+            y = fs.nextInt();
+            makeConnection(x, y);
+            makeConnection(y, x);
         }
-        int rounds = 1;
-        for (int i = 1; i < n; i++) {
-            if (ind[i] > ind[i+1]) {
-                rounds++;
-            }
-        }
-        int[] pairs = new int[4];
-        while (q > 0) {
-            int x = fs.nextInt(), y = fs.nextInt();
-
-            int x1 = arr[x], x2 = arr[y];
-            
-            int cnt = 0;
-            if (x1 > 1) pairs[cnt++] = x1-1;
-            if (x1 < n) pairs[cnt++] = x1;
-            if (x2 > 1) pairs[cnt++] = x2-1;
-            if (x2 < n) pairs[cnt++] = x2;
-
-            Arrays.sort(pairs, 0, cnt);
-            
-            int uni = 0;
-            for (int i = 0; i < cnt; i++) {
-                if (i==0 || pairs[i] != pairs[i-1]) {
-                    pairs[uni++] = pairs[i];
+        mat = new boolean[n+1];
+        dfs(1, -1);
+        out.print(ms);
+        out.flush();
+    }
+    static void dfs(int u, int p) {
+        for (int i = head[u]; i != -1; i = next[i]) {
+            int v = to[i];
+            if (v != p) {
+                dfs(v, u);
+                if (!mat[v] && !mat[u]) {
+                    mat[u]=true;
+                    mat[v]=true;
+                    ms++;
                 }
             }
-
-            for (int i = 0; i < uni; i++) {
-                int p = pairs[i];
-                if (ind[p] > ind[p+1]) rounds--;
-            }
-            
-            arr[x] = x2;
-            arr[y] = x1;
-
-            ind[x1] = y;
-            ind[x2] = x;
-
-            for (int i = 0; i < uni; i++) {
-                int p = pairs[i];
-                if (ind[p] > ind[p+1]) rounds++;
-            }
-
-            q--;
-            out.println(rounds);
         }
-        out.flush();
     }
 }

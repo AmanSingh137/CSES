@@ -1,11 +1,12 @@
-package MissingNumber;
+package SortingAndSearching.FerrisWheel;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 
-public class MissingNumber {
-    static class FastScanner {
+
+public class FerrisWheel {
+    
+static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
         private int ptr = 0, len = 0;
@@ -51,32 +52,8 @@ public class MissingNumber {
                 val = val * 10 + (c - '0');
             return val * sign;
         }
-        String nextString() throws IOException {
-            int c;
-            while ((c = read()) <= ' ')
-                if (c == -1)
-                    return null;
-
-            StringBuilder sb = new StringBuilder();
-            sb.append((char) c);
-
-            while ((c = read()) > ' ')
-                sb.append((char) c);
-
-            return sb.toString();
-        }
     }
-    public static void main(String[] args) throws IOException {
-        FastScanner fs = new FastScanner();
-        PrintWriter out = new PrintWriter(System.out);
-        long n = fs.nextLong();
-        long sum = 0;
-        for (int i = 0; i < n-1; i++) {
-            long x = fs.nextLong();
-            sum += x;
-        }
-        long p = (n*(n+1))/2;
-        out.print(p-sum);
-        out.flush();
+    public static void main(String[] args) {
+        // pending to implement in java
     }
 }

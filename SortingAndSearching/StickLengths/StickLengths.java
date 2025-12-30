@@ -1,16 +1,12 @@
-package TreeMatching;
+package SortingAndSearching.StickLengths;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 
-public class TreeMatching {
-    static int n;
-    static int[] to, head, next;
-    static int ec = 0;
-    static boolean[] mat;
-    static int ms = 0;
+public class StickLengths {
     static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
@@ -72,57 +68,23 @@ public class TreeMatching {
             return sb.toString();
         }
     }
-    
-    public static void main(String[] args) {
-        Thread thread = new Thread(null, () -> {
-            try {
-                solve();
-            } catch (Exception e) {}
-        }, "solver", 1 << 28); 
-        thread.start();
-    }
-    public static void makeConnection(int a, int b) {
-        to[ec]=b;
-        next[ec]=head[a];
-        head[a]=ec++;
-    }
-    public static void solve() throws IOException {
+    public static void main(String[] args) throws IOException{
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        n = fs.nextInt();
-        if (n == 1) {
-            out.print(0);
-            out.flush();
-            return;
-        } 
-        head = new int[n+1];
-        Arrays.fill(head, -1);
-        to = new int[2*n];
-        next = new int[2*n];
-        ec=0;
-        for (int i = 0; i < n-1; i++) {
-            int x, y;
-            x = fs.nextInt();
-            y = fs.nextInt();
-            makeConnection(x, y);
-            makeConnection(y, x);
+        
+        int n = fs.nextInt();
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            int x = fs.nextInt();
+            arr.add(x);
         }
-        mat = new boolean[n+1];
-        dfs(1, -1);
-        out.print(ms);
+        Collections.sort(arr);
+        int m = arr.get(n/2);
+        long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += (long) Math.abs(arr.get(i) - m); 
+        }
+        out.print(ans);
         out.flush();
-    }
-    static void dfs(int u, int p) {
-        for (int i = head[u]; i != -1; i = next[i]) {
-            int v = to[i];
-            if (v != p) {
-                dfs(v, u);
-                if (!mat[v] && !mat[u]) {
-                    mat[u]=true;
-                    mat[v]=true;
-                    ms++;
-                }
-            }
-        }
     }
 }

@@ -1,11 +1,12 @@
-package Labyrinth;
+package SortingAndSearching.MissingCoinSum;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class Labyrinth {
+public class MissingCoinSum {
     static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
@@ -67,59 +68,22 @@ public class Labyrinth {
             return sb.toString();
         }
     }
-    public static StringBuilder ans = new StringBuilder();
-    public static boolean reachable (int[][] vis, char[][] a, int i, int j, int n, int m, StringBuilder s) {
-        if (i < 0 || j < 0 || i >= n || j >= m) return false;
-        if (a[i][j]=='#') return false;
-        if (vis[i][j]==1) return false;
-        if (a[i][j]=='B') {
-            ans = s;
-            return true;
-        }
-        vis[i][j]=1;
-        
-        return reachable(vis, a, i, j-1, n, m, (new StringBuilder()).append('L')) || 
-        reachable(vis, a, i, j+1, n, m, (new StringBuilder()).append('R')) ||
-        reachable(vis, a, i-1, j, n, m, (new StringBuilder()).append('U')) ||
-        reachable(vis, a, i+1, j, n, m, (new StringBuilder()).append('D'));
-    }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-
-        int n = fs.nextInt(), m = fs.nextInt();
-
-        ArrayList<String> arr = new ArrayList<>();
-
+        int n = fs.nextInt();
+        ArrayList<Integer> arr = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            arr.add(fs.nextString());
+            int x = fs.nextInt();
+            arr.add(x);
         }
-
-        char[][] a = new char[n][m];
-        
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                a[i][j]=arr.get(i).charAt(j);
-            }
+        Collections.sort(arr);
+        Long sum = (long) 0;
+        for (Integer a : arr) {
+            if (a > sum + 1) break;
+            sum += a;
         }
-        int[][] vis = new int[n][m];
-        boolean check = false;
-        
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (vis[i][j]==0 && a[i][j]=='A') {
-                    check = reachable(vis, a, i, j, n, m, new StringBuilder());
-                    if (check) {
-                        out.println("YES");
-                        out.println(ans.length());
-                        out.println(ans);
-                        out.flush();
-                        return;
-                    }
-                }
-            }
-        }
-        out.print("NO");
+        out.print(sum + 1);
         out.flush();
     }
 }

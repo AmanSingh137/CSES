@@ -1,4 +1,4 @@
-package Apartments;
+package SortingAndSearching.Apartments;
 
 import java.io.*;
 import java.util.*;

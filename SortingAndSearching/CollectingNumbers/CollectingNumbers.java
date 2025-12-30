@@ -1,4 +1,4 @@
-package CollectingNumbers;
+package SortingAndSearching.CollectingNumbers;
 
 import java.io.IOException;
 import java.io.InputStream;

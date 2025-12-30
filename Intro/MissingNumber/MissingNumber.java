@@ -1,11 +1,10 @@
-package MaximumSubarraySum;
+package Intro.MissingNumber;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
-public class MaximumSubarraySum {
+public class MissingNumber {
     static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
@@ -53,39 +52,31 @@ public class MaximumSubarraySum {
             return val * sign;
         }
         String nextString() throws IOException {
-        int c;
-        while ((c = read()) <= ' ')
-            if (c == -1)
-                return null;
+            int c;
+            while ((c = read()) <= ' ')
+                if (c == -1)
+                    return null;
 
-        StringBuilder sb = new StringBuilder();
-        sb.append((char) c);
-
-        while ((c = read()) > ' ')
+            StringBuilder sb = new StringBuilder();
             sb.append((char) c);
 
-        return sb.toString();
-    }
+            while ((c = read()) > ' ')
+                sb.append((char) c);
+
+            return sb.toString();
+        }
     }
     public static void main(String[] args) throws IOException {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        int n = fs.nextInt();
-        ArrayList<Integer> arr = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            int x = fs.nextInt();
-            arr.add(x);
+        long n = fs.nextLong();
+        long sum = 0;
+        for (int i = 0; i < n-1; i++) {
+            long x = fs.nextLong();
+            sum += x;
         }
-        long cur = 0, sum = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) {
-            cur += (long) arr.get(i);
-            sum = Math.max(sum, cur);
-            if (cur < 0) {
-                cur = 0;
-            }
-        }
-        out.print(sum);
+        long p = (n*(n+1))/2;
+        out.print(p-sum);
         out.flush();
-
     }
 }

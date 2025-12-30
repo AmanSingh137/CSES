@@ -1,12 +1,11 @@
-package StickLengths;
+package Graph.CountingRooms;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class StickLengths {
+public class CountingRooms {
     static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
@@ -68,23 +67,42 @@ public class StickLengths {
             return sb.toString();
         }
     }
-    public static void main(String[] args) throws IOException{
+    public static void solve (int[][] vis, char[][] a, int i, int j, int n, int m) {
+        if (i < 0 || j < 0 || i >= n || j >= m) return;
+        if (a[i][j]=='#') return;
+        if (vis[i][j]==1) return;
+        vis[i][j]=1;
+        solve(vis, a, i, j+1, n, m);
+        solve(vis, a, i, j-1, n, m);
+        solve(vis, a, i-1, j, n, m);
+        solve(vis, a, i+1, j, n, m);
+    }
+    public static void main(String[] args) throws IOException {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        
-        int n = fs.nextInt();
-        ArrayList<Integer> arr = new ArrayList<>();
+
+        int n = fs.nextInt(), m = fs.nextInt();
+        char[][] a = new char[n][m];
+        ArrayList<String> arr = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            int x = fs.nextInt();
-            arr.add(x);
+            arr.add(fs.nextString());
         }
-        Collections.sort(arr);
-        int m = arr.get(n/2);
-        long ans = 0;
         for (int i = 0; i < n; i++) {
-            ans += (long) Math.abs(arr.get(i) - m); 
+            for (int j = 0; j < m; j++) {
+                a[i][j] = arr.get(i).charAt(j);
+            }
         }
-        out.print(ans);
+        int cnt = 0;
+        int[][] vis = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (vis[i][j]==0 && a[i][j] == '.') {
+                    solve(vis, a, i, j, n, m);
+                    cnt++;
+                }
+            }
+        }
+        out.print(cnt);
         out.flush();
     }
 }

@@ -1,11 +1,12 @@
-package CountingRooms;
+package SortingAndSearching.CollectingNumbers2;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Arrays;
 
-public class CountingRooms {
+
+public class CollectingNumbers {
     static class FastScanner {
         private final InputStream in = System.in;
         private final byte[] buffer = new byte[1 << 16];
@@ -67,42 +68,63 @@ public class CountingRooms {
             return sb.toString();
         }
     }
-    public static void solve (int[][] vis, char[][] a, int i, int j, int n, int m) {
-        if (i < 0 || j < 0 || i >= n || j >= m) return;
-        if (a[i][j]=='#') return;
-        if (vis[i][j]==1) return;
-        vis[i][j]=1;
-        solve(vis, a, i, j+1, n, m);
-        solve(vis, a, i, j-1, n, m);
-        solve(vis, a, i-1, j, n, m);
-        solve(vis, a, i+1, j, n, m);
-    }
     public static void main(String[] args) throws IOException {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-
-        int n = fs.nextInt(), m = fs.nextInt();
-        char[][] a = new char[n][m];
-        ArrayList<String> arr = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            arr.add(fs.nextString());
+        int n = fs.nextInt(), q = fs.nextInt();
+        int[] ind = new int[n+1];
+        int[] arr = new int[n+1];
+        for (int i = 1; i <= n; i++) {
+            int x = fs.nextInt();
+            ind[x]=i;
+            arr[i]=x;
         }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                a[i][j] = arr.get(i).charAt(j);
+        int rounds = 1;
+        for (int i = 1; i < n; i++) {
+            if (ind[i] > ind[i+1]) {
+                rounds++;
             }
         }
-        int cnt = 0;
-        int[][] vis = new int[n][m];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (vis[i][j]==0 && a[i][j] == '.') {
-                    solve(vis, a, i, j, n, m);
-                    cnt++;
+        int[] pairs = new int[4];
+        while (q > 0) {
+            int x = fs.nextInt(), y = fs.nextInt();
+
+            int x1 = arr[x], x2 = arr[y];
+            
+            int cnt = 0;
+            if (x1 > 1) pairs[cnt++] = x1-1;
+            if (x1 < n) pairs[cnt++] = x1;
+            if (x2 > 1) pairs[cnt++] = x2-1;
+            if (x2 < n) pairs[cnt++] = x2;
+
+            Arrays.sort(pairs, 0, cnt);
+            
+            int uni = 0;
+            for (int i = 0; i < cnt; i++) {
+                if (i==0 || pairs[i] != pairs[i-1]) {
+                    pairs[uni++] = pairs[i];
                 }
             }
+
+            for (int i = 0; i < uni; i++) {
+                int p = pairs[i];
+                if (ind[p] > ind[p+1]) rounds--;
+            }
+            
+            arr[x] = x2;
+            arr[y] = x1;
+
+            ind[x1] = y;
+            ind[x2] = x;
+
+            for (int i = 0; i < uni; i++) {
+                int p = pairs[i];
+                if (ind[p] > ind[p+1]) rounds++;
+            }
+
+            q--;
+            out.println(rounds);
         }
-        out.print(cnt);
         out.flush();
     }
 }
