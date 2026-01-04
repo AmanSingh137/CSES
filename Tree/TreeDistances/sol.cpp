@@ -9,7 +9,6 @@ int bfs (int start, vector<vector<int>>& tree, vector<int>& dist) {
     q.push(start);
     int mx = start;
     dist[start]=0;
-    int ans = 0;
     while (!q.empty()) {
         int a = q.front();
         q.pop();
@@ -18,11 +17,10 @@ int bfs (int start, vector<vector<int>>& tree, vector<int>& dist) {
             if (dist[i]==-1) {
                 dist[i]=dist[a]+1;
                 q.push(i);
-                ans = max(ans, dist[i]);
             }
         }
     }
-    return ans;
+    return mx;
 }
 
 int main() {
@@ -35,14 +33,12 @@ int main() {
         tree[x].push_back(y);
         tree[y].push_back(x);
     }
-    vector<int> ans;
+    vector<int> dist(n+1, -1), d1(n+1, -1), d2(n+1, -1);
+    int k = bfs(1, tree, dist);
+    int p = bfs(k, tree, d1);
+    int t = bfs(p, tree, d2);
     for (int i = 1; i <= n; i++) {
-        vector<int> dist(n+1, -1);
-        int k = bfs (i, tree, dist);
-        ans.push_back(k);
-    }
-    for (int i = 0; i < ans.size(); i++) {
-        cout << ans[i] << " ";
+        cout << max(d1[i], d2[i]) << " ";
     }
     return 0;
 }
