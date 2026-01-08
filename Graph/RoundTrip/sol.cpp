@@ -57,7 +57,6 @@ int main() {
     }
     int l = cycle.size();
     cout << l << endl;
-    reverse(cycle.begin(), cycle.end());
     for (int i = 0; i < l; i++) {
         cout << cycle[i] << " ";
     }
